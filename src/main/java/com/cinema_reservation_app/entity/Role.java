@@ -1,7 +1,6 @@
 package com.cinema_reservation_app.entity;
 
-public class Cinema {
+public class Role {
     private Long id;
     private String name;
-    private Address address;
 }
