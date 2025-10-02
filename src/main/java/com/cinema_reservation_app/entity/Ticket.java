@@ -5,29 +5,28 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "reservations")
-public class Reservation {
+@Table(name = "tickets")
+public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
+
+    @Enumerated()
+    private TicketType ticketType;
+
+    @ManyToOne
+    @JoinColumn(name = "seat_id")
+    private Seat seat;
 
     @ManyToOne
     @JoinColumn(name = "screening_id")
     private Screening screening;
-
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
-    private List<Ticket> tickets = new ArrayList<>();
 }
