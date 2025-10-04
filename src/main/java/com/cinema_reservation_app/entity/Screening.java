@@ -21,7 +21,7 @@ public class Screening {
 
     @ManyToOne
     @JoinColumn(name = "theater_room_id")
-    private TheaterRoom theaterRoom;
+    private CinemaRoom theaterRoom;
 
     @ManyToOne
     @JoinColumn(name = "movie_id")

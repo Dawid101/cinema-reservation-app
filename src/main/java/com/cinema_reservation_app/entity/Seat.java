@@ -21,7 +21,7 @@ public class Seat {
 
     @ManyToOne
     @JoinColumn(name = "theater_room_id")
-    private TheaterRoom theaterRoom;
+    private CinemaRoom cinemaRoom;
 
     private boolean isAvailable = true;
 }

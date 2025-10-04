@@ -10,14 +10,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "theater_rooms")
-public class TheaterRoom {
+@Table(name = "cinema_rooms")
+public class CinemaRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "cinema_room_number")
     private int number;
 
-    @OneToMany(mappedBy = "theaterRoom", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cinemaRoom", cascade = CascadeType.ALL)
     private List<Seat> seats;
 }
 
