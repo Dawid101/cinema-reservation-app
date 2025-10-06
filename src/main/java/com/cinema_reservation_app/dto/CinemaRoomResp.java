@@ -4,6 +4,6 @@ import com.cinema_reservation_app.entity.Seat;
 
 import java.util.List;
 
-public record CinemaRoomResp(int roomNumber,
+public record CinemaRoomResp(int number,
                              List<Seat> seats
                              ) {}

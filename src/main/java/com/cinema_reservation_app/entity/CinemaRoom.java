@@ -16,7 +16,7 @@ public class CinemaRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "cinema_room_number")
+    @Column(name = "cinema_room_number", unique = true)
     private int number;
 
     @OneToMany(mappedBy = "cinemaRoom", cascade = CascadeType.ALL)

@@ -1,6 +1,7 @@
 package com.cinema_reservation_app.controller;
 
 import com.cinema_reservation_app.dto.ErrorResp;
+import com.cinema_reservation_app.exception.CinemaRoomAlreadyExistException;
 import com.cinema_reservation_app.exception.CinemaRoomNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResp> handleCinemaRoomNotFoundException(CinemaRoomNotFoundException exception){
         ErrorResp cinemaRoomNotFound = new ErrorResp("CINEMA ROOM NOT FOUND", exception.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(cinemaRoomNotFound, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CinemaRoomAlreadyExistException.class)
+    public ResponseEntity<ErrorResp> handleCinemaRoomAlreadyExistException(CinemaRoomAlreadyExistException exception){
+        ErrorResp errorResp = new ErrorResp("CINEMA ROOM ALREADY EXIST", exception.getMessage(),LocalDateTime.now());
+        return new ResponseEntity<>(errorResp, HttpStatus.CONFLICT);
     }
 
 

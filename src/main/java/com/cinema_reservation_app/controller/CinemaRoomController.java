@@ -6,10 +6,7 @@ import com.cinema_reservation_app.service.CinemaRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,6 +25,24 @@ public class CinemaRoomController {
     @GetMapping("/room/{number}")
     public ResponseEntity<CinemaRoomResp> getCinemaRoomByNumber(@PathVariable int number){
         return new ResponseEntity<>(cinemaRoomService.getCinemaRoomByNumber(number),HttpStatus.FOUND);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<CinemaRoomResp> createCinemaRoom(@RequestBody CinemaRoom cinemaRoom){
+        CinemaRoomResp createdCinemaRoom = cinemaRoomService.save(cinemaRoom);
+        return ResponseEntity.ok(createdCinemaRoom);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteCinemaRoom(@PathVariable Long id){
+        cinemaRoomService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<CinemaRoomResp> updateCinemaRoom(@PathVariable Long id, @RequestBody CinemaRoom cinemaRoom){
+        CinemaRoomResp updatedCinemaRoom = cinemaRoomService.update(id,cinemaRoom);
+        return ResponseEntity.ok(updatedCinemaRoom);
     }
 
 }
