@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/cinema")
+@RequestMapping("/api/cinema-room")
 @RequiredArgsConstructor
 public class CinemaRoomController {
 
@@ -22,7 +22,7 @@ public class CinemaRoomController {
         return new ResponseEntity<>(cinemaRoomService.getCinemaRoomList(), HttpStatus.OK);
     }
 
-    @GetMapping("/room/{number}")
+    @GetMapping("/{number}")
     public ResponseEntity<CinemaRoomResp> getCinemaRoomByNumber(@PathVariable int number){
         return new ResponseEntity<>(cinemaRoomService.getCinemaRoomByNumber(number),HttpStatus.FOUND);
     }

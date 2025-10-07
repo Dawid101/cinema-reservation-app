@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,13 +40,20 @@ public class CinemaRoomService {
     }
 
     public void delete(Long id) {
-        cinemaRoomRepo.deleteById(id);
+        if(cinemaRoomRepo.existsById(id)) {
+            cinemaRoomRepo.deleteById(id);
+        }else{
+            throw new CinemaRoomNotFoundException("Cinema room not found");
+        }
     }
 
     public CinemaRoomResp update(Long id, CinemaRoom cinemaRoomReq) {
         CinemaRoom cinemaRoom = cinemaRoomRepo.findById(id).orElseThrow(() -> new CinemaRoomNotFoundException("Cinema room not found"));
-        if (cinemaRoomRepo.findByNumber(cinemaRoomReq.getNumber()).isPresent()) {
-            throw new CinemaRoomAlreadyExistException("Cinema room with number " + cinemaRoomReq.getNumber() + " already exist.");
+
+        Optional<CinemaRoom> existing = cinemaRoomRepo.findByNumber(cinemaRoomReq.getNumber());
+        if (existing.isPresent() && !existing.get().getId().equals(id)) {
+            throw new CinemaRoomAlreadyExistException(
+                    "Cinema room with number " + cinemaRoomReq.getNumber() + " already exist.");
         }
         cinemaRoom.setNumber(cinemaRoomReq.getNumber());
         cinemaRoom.setSeats(cinemaRoomReq.getSeats());
