@@ -7,7 +7,6 @@ import com.cinema_reservation_app.exception.CinemaRoomAlreadyExistException;
 import com.cinema_reservation_app.exception.CinemaRoomNotFoundException;
 import com.cinema_reservation_app.mapper.CinemaRoomMapper;
 import com.cinema_reservation_app.repository.CinemaRoomRepo;
-import com.cinema_reservation_app.repository.SeatRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
