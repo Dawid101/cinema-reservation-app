@@ -29,7 +29,7 @@ public class CinemaRoomController {
 
     @PostMapping("/add")
     public ResponseEntity<CinemaRoomResp> createCinemaRoom(@RequestBody CinemaRoom cinemaRoom){
-        CinemaRoomResp createdCinemaRoom = cinemaRoomService.save(cinemaRoom);
+        CinemaRoomResp createdCinemaRoom = cinemaRoomService.createCinemaRoom(cinemaRoom);
         return ResponseEntity.ok(createdCinemaRoom);
     }
 

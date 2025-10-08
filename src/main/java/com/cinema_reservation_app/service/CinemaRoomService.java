@@ -2,10 +2,12 @@ package com.cinema_reservation_app.service;
 
 import com.cinema_reservation_app.dto.CinemaRoomResp;
 import com.cinema_reservation_app.entity.CinemaRoom;
+import com.cinema_reservation_app.entity.Seat;
 import com.cinema_reservation_app.exception.CinemaRoomAlreadyExistException;
 import com.cinema_reservation_app.exception.CinemaRoomNotFoundException;
 import com.cinema_reservation_app.mapper.CinemaRoomMapper;
 import com.cinema_reservation_app.repository.CinemaRoomRepo;
+import com.cinema_reservation_app.repository.SeatRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +32,10 @@ public class CinemaRoomService {
         return cinemaRoomMapper.toCinemaRoomResp(cinemaRoom);
     }
 
-    public CinemaRoomResp save(CinemaRoom cinemaRoom) {
+    public CinemaRoomResp createCinemaRoom(CinemaRoom cinemaRoom) {
         if (cinemaRoomRepo.findByNumber(cinemaRoom.getNumber()).isEmpty()) {
+            List<Seat> seats = cinemaRoom.getSeats();
+            seats.forEach(seat -> seat.setCinemaRoom(cinemaRoom));
             CinemaRoom createdCinemaRoom = cinemaRoomRepo.save(cinemaRoom);
             return cinemaRoomMapper.toCinemaRoomResp(createdCinemaRoom);
         } else {

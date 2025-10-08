@@ -1,5 +1,7 @@
 package com.cinema_reservation_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,14 +15,16 @@ import lombok.NoArgsConstructor;
 public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
-    private int number;
+    private int seatNumber;
 
     @Column(name = "row_num")
     private int rowNumber;
 
     @ManyToOne
-    @JoinColumn(name = "theater_room_id")
+    @JoinColumn(name = "cinema_room_id")
+    @JsonBackReference
     private CinemaRoom cinemaRoom;
 
     private boolean isAvailable = true;

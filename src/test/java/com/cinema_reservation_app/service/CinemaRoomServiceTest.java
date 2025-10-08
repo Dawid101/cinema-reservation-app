@@ -87,7 +87,7 @@ class CinemaRoomServiceTest {
         Mockito.when(cinemaRoomMapper.toCinemaRoomResp(cinemaRoom)).thenReturn(cinemaRoomResp);
 
         //when
-        CinemaRoomResp result = cinemaRoomService.save(cinemaRoom);
+        CinemaRoomResp result = cinemaRoomService.createCinemaRoom(cinemaRoom);
 
         //then
         Mockito.verify(cinemaRoomRepo).findByNumber(cinemaRoom.getNumber());
@@ -104,7 +104,7 @@ class CinemaRoomServiceTest {
         Mockito.when(cinemaRoomRepo.findByNumber(cinemaRoom.getNumber())).thenReturn(Optional.of(cinemaRoom));
 
         //when / then
-        assertThrows(CinemaRoomAlreadyExistException.class, () -> cinemaRoomService.save(cinemaRoom));
+        assertThrows(CinemaRoomAlreadyExistException.class, () -> cinemaRoomService.createCinemaRoom(cinemaRoom));
         Mockito.verify(cinemaRoomRepo, Mockito.never()).save(cinemaRoom);
     }
 

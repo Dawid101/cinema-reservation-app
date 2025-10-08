@@ -1,5 +1,6 @@
 package com.cinema_reservation_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class CinemaRoom {
     private int number;
 
     @OneToMany(mappedBy = "cinemaRoom", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Seat> seats;
 }
 
