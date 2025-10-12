@@ -1,5 +1,6 @@
 package com.cinema_reservation_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,14 +22,14 @@ public class Screening {
     private LocalDateTime startTime;
 
     @ManyToOne
-    @JoinColumn(name = "theater_room_id")
-    private CinemaRoom theaterRoom;
+    @JoinColumn(name = "cinema_room_id")
+    private CinemaRoom cinemaRoom;
 
     @ManyToOne
     @JoinColumn(name = "movie_id")
+    @JsonBackReference
     private Movie movie;
 
     @OneToMany(mappedBy = "screening")
     private List<Reservation> reservations = new ArrayList<>();
-
 }
