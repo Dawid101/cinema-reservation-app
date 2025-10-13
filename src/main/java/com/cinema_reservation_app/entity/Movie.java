@@ -25,7 +25,7 @@ public class Movie {
     private Duration duration;
     private LocalDate releaseDate;
 
-    @OneToMany(mappedBy = "movie" , cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "movie" , cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonManagedReference
     private List<Screening> screenings = new ArrayList<>();
 }
