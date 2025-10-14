@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/cinema-movie")
+@RequestMapping("/api/movie")
 @RequiredArgsConstructor
 public class MovieController {
     private final MovieService movieService;
@@ -22,7 +22,7 @@ public class MovieController {
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    @GetMapping("/all-movies")
+    @GetMapping("/all")
     public ResponseEntity<List<MovieResp>> getAllMovies(){
         return ResponseEntity.status(HttpStatus.OK).body(movieService.getMovieList());
     }
@@ -31,4 +31,6 @@ public class MovieController {
     public ResponseEntity<MovieResp> getMovieById(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(movieService.getMovieById(id));
     }
+
+
 }

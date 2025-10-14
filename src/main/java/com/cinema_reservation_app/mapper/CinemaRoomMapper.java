@@ -1,7 +1,6 @@
 package com.cinema_reservation_app.mapper;
 
 import com.cinema_reservation_app.dto.CinemaRoomResp;
-import com.cinema_reservation_app.dto.SeatResp;
 import com.cinema_reservation_app.entity.CinemaRoom;
 import com.cinema_reservation_app.entity.Seat;
 import org.springframework.stereotype.Component;

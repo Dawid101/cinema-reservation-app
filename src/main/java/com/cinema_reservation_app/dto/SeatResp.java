@@ -3,6 +3,5 @@ package com.cinema_reservation_app.dto;
 public record SeatResp(Long id,
                        int seatNumber,
                        int rowNumber,
-                       Long cinemaRoomId,
-                       boolean isAvailable) {
+                       boolean available) {
 }
