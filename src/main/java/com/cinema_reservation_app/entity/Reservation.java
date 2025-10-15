@@ -1,5 +1,6 @@
 package com.cinema_reservation_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,6 +21,9 @@ public class Reservation {
     private Long id;
     private LocalDateTime createdAt;
 
+    @Enumerated
+    private ReservationStatus reservationStatus;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -28,6 +32,12 @@ public class Reservation {
     @JoinColumn(name = "screening_id")
     private Screening screening;
 
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
-    private List<Ticket> tickets = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "reservation_seats",
+            joinColumns = @JoinColumn(name = "reservation_id"),
+            inverseJoinColumns = @JoinColumn(name = "seat_id"))
+    private List<Seat> seats = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private TicketType ticketType;
 }

@@ -17,7 +17,7 @@ public class CinemaRoomController {
 
     private final CinemaRoomService cinemaRoomService;
 
-    @GetMapping("/all-cinema-rooms")
+    @GetMapping("/all")
     public ResponseEntity<List<CinemaRoomResp>> getAllCinemaRooms() {
         return new ResponseEntity<>(cinemaRoomService.getCinemaRoomList(), HttpStatus.OK);
     }
