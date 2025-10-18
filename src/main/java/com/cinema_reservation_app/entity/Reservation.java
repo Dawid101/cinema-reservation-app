@@ -1,6 +1,5 @@
 package com.cinema_reservation_app.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +20,7 @@ public class Reservation {
     private Long id;
     private LocalDateTime createdAt;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private ReservationStatus reservationStatus;
 
     @ManyToOne

@@ -8,6 +8,6 @@ import java.util.List;
 public record ReservationResp(Long id,
                               ReservationStatus reservationStatus,
                               Long screeningId,
-                              List<SeatResp> seats,
+                              List<ReservationSeatsResp> seats,
                               TicketType ticketType) {
 }

@@ -1,10 +1,7 @@
 package com.cinema_reservation_app.controller;
 
 import com.cinema_reservation_app.dto.ErrorResp;
-import com.cinema_reservation_app.exception.CinemaRoomAlreadyExistException;
-import com.cinema_reservation_app.exception.CinemaRoomNotFoundException;
-import com.cinema_reservation_app.exception.MovieAlreadyExistException;
-import com.cinema_reservation_app.exception.ScreeningNotFoundException;
+import com.cinema_reservation_app.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,5 +36,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResp, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(SeatUnavailableException.class)
+    public ResponseEntity<ErrorResp> handlerSeatUnavailableException(SeatUnavailableException exception) {
+        ErrorResp errorResp = new ErrorResp("SOME SEATS ARE ALREADY RESERVED", exception.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<>(errorResp, HttpStatus.CONFLICT);
+    }
 
+    @ExceptionHandler(ReservationNotFoundException.class)
+    public ResponseEntity<ErrorResp> handlerReservationNotFoundException(ReservationNotFoundException exception) {
+        ErrorResp errorResp = new ErrorResp("RESERVATION NOT FOUND", exception.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<>(errorResp, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ReservationAlreadyCanceledException.class)
+    public ResponseEntity<ErrorResp> handlerReservationAlreadyCanceledException(ReservationAlreadyCanceledException exception) {
+        ErrorResp errorResp = new ErrorResp("RESERVATION ALREADY CANCELED", exception.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<>(errorResp, HttpStatus.CONFLICT);
+    }
 }
