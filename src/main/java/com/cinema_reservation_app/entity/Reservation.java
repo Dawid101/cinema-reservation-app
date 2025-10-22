@@ -1,5 +1,6 @@
 package com.cinema_reservation_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,12 +32,12 @@ public class Reservation {
     @JoinColumn(name = "screening_id")
     private Screening screening;
 
-    @ManyToMany
-    @JoinTable(name = "reservation_seats",
-            joinColumns = @JoinColumn(name = "reservation_id"),
-            inverseJoinColumns = @JoinColumn(name = "seat_id"))
-    private List<Seat> seats = new ArrayList<>();
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<ReservationSeat> seats = new ArrayList<>();
 
-    @Enumerated(EnumType.STRING)
-    private TicketType ticketType;
+    public void addSeat(ReservationSeat seat) {
+        seats.add(seat);
+        seat.setReservation(this);
+    }
 }

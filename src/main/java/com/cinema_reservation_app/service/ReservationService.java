@@ -2,10 +2,8 @@ package com.cinema_reservation_app.service;
 
 import com.cinema_reservation_app.dto.ReservationReq;
 import com.cinema_reservation_app.dto.ReservationResp;
-import com.cinema_reservation_app.entity.Reservation;
-import com.cinema_reservation_app.entity.ReservationStatus;
-import com.cinema_reservation_app.entity.Screening;
-import com.cinema_reservation_app.entity.Seat;
+import com.cinema_reservation_app.dto.ReservationSeatReq;
+import com.cinema_reservation_app.entity.*;
 import com.cinema_reservation_app.exception.ReservationAlreadyCanceledException;
 import com.cinema_reservation_app.exception.ReservationNotFoundException;
 import com.cinema_reservation_app.exception.ScreeningNotFoundException;
@@ -34,12 +32,17 @@ public class ReservationService {
     private final SeatRepo seatRepo;
 
     public ReservationResp createReservation(ReservationReq req) {
-        log.info("Creating reservation for screeningId={}, seats={}", req.screeningId(), req.seatIds());
+        log.info("Creating reservation for screeningId={}, seats={}", req.screeningId(), req.seats());
 
-        List<Seat> seats = seatRepo.findAllById(req.seatIds());
-        int count = seatRepo.countByIdInAndIsAvailableFalse(req.seatIds());
+        List<ReservationSeatReq> reservationSeatsReq = req.seats();
+        List<ReservationSeat> reservationSeats = reservationSeatsReq.stream().map(reservationMapper::toReservationSeat).toList();
+
+        List<Seat> seats = reservationSeats.stream().map(ReservationSeat::getSeat).toList();
+        List<Long> seatIds = seats.stream().map(Seat::getId).toList();
+
+        int count = seatRepo.countByIdInAndIsAvailableFalse(seatIds);
         if (count > 0) {
-            log.warn("Attempt to reserve unavailable seats: {}", req.seatIds());
+            log.warn("Attempt to reserve unavailable seats: {}", seatIds);
             throw new SeatUnavailableException("Some selected seats are already reserved.");
         }
 
@@ -50,13 +53,11 @@ public class ReservationService {
         Screening screening = screeningRepo.findById(req.screeningId())
                 .orElseThrow(() -> new ScreeningNotFoundException("Screening not found"));
         createdReservation.setScreening(screening);
-        createdReservation.setSeats(seats);
+        reservationSeats.forEach(createdReservation::addSeat);
         seats.forEach(seat -> seat.setAvailable(false));
 
-        createdReservation.setTicketType(req.ticketType());
-
         reservationRepo.save(createdReservation);
-        log.info("Created reservation for screening id={}, seats={}", req.screeningId(), req.seatIds());
+        log.info("Created reservation for screening id={}, seats={}", req.screeningId(), req.seats());
         return reservationMapper.toReservationResp(createdReservation);
     }
 
@@ -76,7 +77,7 @@ public class ReservationService {
         Reservation reservation = findById(id);
         if (reservation.getReservationStatus() != ReservationStatus.CANCELED) {
             reservation.setReservationStatus(ReservationStatus.CANCELED);
-            List<Seat> seats = reservation.getSeats();
+            List<Seat> seats = reservation.getSeats().stream().map(ReservationSeat::getSeat).toList();
             seats.forEach(seat -> seat.setAvailable(true));
             reservationRepo.save(reservation);
             log.info("Reservation id {}, canceled", reservation.getId());
