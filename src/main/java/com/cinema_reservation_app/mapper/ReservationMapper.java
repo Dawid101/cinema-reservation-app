@@ -1,5 +1,6 @@
 package com.cinema_reservation_app.mapper;
 
+import com.cinema_reservation_app.dto.ReservationReq;
 import com.cinema_reservation_app.dto.ReservationResp;
 import com.cinema_reservation_app.dto.ReservationSeatReq;
 import com.cinema_reservation_app.dto.ReservationSeatResp;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -42,11 +44,15 @@ public class ReservationMapper {
     }
 
     public ReservationSeat toReservationSeat(ReservationSeatReq reservationSeatReq) {
-        Long id = reservationSeatReq.id();
+        Long id = reservationSeatReq.seatId();
         TicketType ticketType = reservationSeatReq.ticketType();
         ReservationSeat reservationSeat = new ReservationSeat();
         reservationSeat.setSeat(seatRepo.getReferenceById(id));
         reservationSeat.setTicketType(ticketType);
         return reservationSeat;
+    }
+
+    public List<ReservationSeat> toReservationSeatList(List<ReservationSeatReq> reservationSeatReqList){
+        return reservationSeatReqList.stream().map(this::toReservationSeat).toList();
     }
 }

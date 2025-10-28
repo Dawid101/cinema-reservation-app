@@ -2,6 +2,6 @@ package com.cinema_reservation_app.dto;
 
 import com.cinema_reservation_app.entity.TicketType;
 
-public record ReservationSeatReq(Long id,
+public record ReservationSeatReq(Long seatId,
                                  TicketType ticketType) {
 }

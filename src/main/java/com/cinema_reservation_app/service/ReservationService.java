@@ -22,7 +22,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class ReservationService {
 
@@ -31,19 +30,20 @@ public class ReservationService {
     private final ScreeningRepo screeningRepo;
     private final SeatRepo seatRepo;
 
+    @Transactional
     public ReservationResp createReservation(ReservationReq req) {
-        log.info("Creating reservation for screeningId={}, seats={}", req.screeningId(), req.seats());
+        log.info("Creating reservation for screeningId={}, seatIds={}", req.screeningId(),
+                req.seats().stream().map(ReservationSeatReq::seatId).toList());
 
         List<ReservationSeatReq> reservationSeatsReq = req.seats();
-        List<ReservationSeat> reservationSeats = reservationSeatsReq.stream().map(reservationMapper::toReservationSeat).toList();
+        List<ReservationSeat> reservationSeats = reservationMapper.toReservationSeatList(reservationSeatsReq);
+        List<Long> ids = reservationSeats.stream().map(s -> s.getSeat().getId()).toList();
+        List<Seat> seats = seatRepo.findAllByIdForUpdate(ids);
 
-        List<Seat> seats = reservationSeats.stream().map(ReservationSeat::getSeat).toList();
-        List<Long> seatIds = seats.stream().map(Seat::getId).toList();
-
-        int count = seatRepo.countByIdInAndIsAvailableFalse(seatIds);
-        if (count > 0) {
-            log.warn("Attempt to reserve unavailable seats: {}", seatIds);
-            throw new SeatUnavailableException("Some selected seats are already reserved.");
+        boolean anyUnavailable = seats.stream().anyMatch(seat -> !seat.isAvailable());
+        if (anyUnavailable) {
+            log.info("Reservation creation canceled");
+            throw new SeatUnavailableException("Some selected seats are already reserved");
         }
 
         Reservation createdReservation = new Reservation();
