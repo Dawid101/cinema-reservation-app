@@ -20,7 +20,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
 public class MovieService {
 
     private final MovieRepo movieRepo;
@@ -37,6 +36,7 @@ public class MovieService {
         return movieMapper.toMovieResp(movie);
     }
 
+    @Transactional
     public MovieResp createMovie(Movie movie) {
         Optional<Movie> existing = movieRepo.findByTitle(movie.getTitle());
         if (existing.isEmpty()) {
