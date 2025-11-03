@@ -92,5 +92,17 @@ public class ReservationService {
                 .orElseThrow(() -> new ReservationNotFoundException("Reservation not found"));
     }
 
+    @Transactional
+    public void cancelAllPendingReservations() {
+        List<Reservation> reservations = reservationRepo.findAllByReservationStatus(ReservationStatus.PENDING);
+        if (!reservations.isEmpty()) {
+            log.info("Cancel all pending reservations");
+            reservations.forEach(r -> {
+                r.setReservationStatus(ReservationStatus.CANCELED);
+                r.getSeats().forEach(s -> s.getSeat().setAvailable(true));
+            });
+        }
+    }
+
 
 }

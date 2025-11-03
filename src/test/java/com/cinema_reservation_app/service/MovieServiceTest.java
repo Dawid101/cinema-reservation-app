@@ -17,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,12 +41,11 @@ class MovieServiceTest {
 
     private Movie movie;
     private MovieResp movieResp;
-    private ScreeningResp screeningResp;
 
     @BeforeEach
     void setUp(){
         movie = new Movie();
-        screeningResp = new ScreeningResp(null, null, null, 0, 0);
+        ScreeningResp screeningResp = new ScreeningResp(null, null, null, 0, 0);
         movieResp = new MovieResp(null, null, null, 0, null, List.of(screeningResp));
     }
 

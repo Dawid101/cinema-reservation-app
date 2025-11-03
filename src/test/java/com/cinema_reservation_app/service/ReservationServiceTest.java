@@ -1,94 +1,112 @@
 package com.cinema_reservation_app.service;
 
-import com.cinema_reservation_app.dto.ReservationReq;
-import com.cinema_reservation_app.dto.ReservationSeatReq;
-import com.cinema_reservation_app.entity.Screening;
-import com.cinema_reservation_app.entity.TicketType;
-import com.cinema_reservation_app.exception.SeatUnavailableException;
-import com.cinema_reservation_app.repository.ScreeningRepo;
-import com.cinema_reservation_app.repository.SeatRepo;
+import com.cinema_reservation_app.dto.ReservationResp;
+import com.cinema_reservation_app.entity.Reservation;
+import com.cinema_reservation_app.entity.ReservationStatus;
+import com.cinema_reservation_app.exception.ReservationAlreadyCanceledException;
+import com.cinema_reservation_app.mapper.ReservationMapper;
+import com.cinema_reservation_app.repository.ReservationRepo;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@Transactional
-@ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 class ReservationServiceTest {
 
+    @Mock
+    private ReservationRepo reservationRepo;
 
-    @Autowired
+    @Mock
+    private ReservationMapper reservationMapper;
+
+    @InjectMocks
     private ReservationService reservationService;
 
-    @Autowired
-    private SeatRepo seatRepo;
+    private Reservation reservation;
 
-    @Autowired
-    private ScreeningRepo screeningRepo;
+    @BeforeEach
+    void setUp(){
+        reservation = new Reservation();
+    }
+
+
 
     @Test
-    void shouldPreventDoubleBookingWhenTwoUsersReserveSameSeatsSimultaneously() throws Exception {
-        // given
-        Screening screening = screeningRepo.findAll().get(0); // przykładowy screening
-        Long seatId = 5L;     // wybieramy konkretne miejsce
+    void confirmReservation_whenPending_shouldBeConfirmed() {
+        //given
+        reservation.setReservationStatus(ReservationStatus.PENDING);
+        ReservationResp reservationResp =
+                new ReservationResp(1L, ReservationStatus.CONFIRMED, 1L, null, null);
 
-        ReservationReq request = new ReservationReq(
-                screening.getId(),
-                List.of(new ReservationSeatReq(seatId, TicketType.NORMAL))
-        );
+        when(reservationRepo.findById(1L)).thenReturn(Optional.of(reservation));
+        when(reservationRepo.save(reservation)).thenReturn(reservation);
+        when(reservationMapper.toReservationResp(reservation)).thenReturn(reservationResp);
 
-        ExecutorService executor = Executors.newFixedThreadPool(2);
-        List<Callable<String>> tasks = new ArrayList<>();
+        //when
+        ReservationResp result = reservationService.confirmReservation(1L);
 
-        tasks.add(() -> tryCreateReservation(request, "User1"));
-        tasks.add(() -> tryCreateReservation(request, "User2"));
-
-        // when
-        List<Future<String>> results = executor.invokeAll(tasks);
-
-        executor.shutdown();
-        executor.awaitTermination(10, TimeUnit.SECONDS);
-
-        // then
-        long successCount = results.stream()
-                .filter(f -> {
-                    try {
-                        return f.get().contains("SUCCESS");
-                    } catch (Exception e) {
-                        return false;
-                    }
-                })
-                .count();
-
-        long failureCount = results.size() - successCount;
-
-        System.out.printf("✅ SUCCESS=%d, ❌ FAILED=%d%n", successCount, failureCount);
-
-        // Oczekujemy, że tylko jeden użytkownik odniósł sukces
-        assertEquals(1, successCount, "Only one reservation should succeed");
-        assertEquals(1, failureCount, "One reservation should fail due to seat lock");
+        //then
+        assertNotNull(result);
+        assertEquals(ReservationStatus.CONFIRMED, result.reservationStatus());
+        verify(reservationRepo).save(reservation);
+        verify(reservationMapper).toReservationResp(reservation);
     }
 
-    private String tryCreateReservation(ReservationReq req, String userLabel) {
-        try {
-            reservationService.createReservation(req);
-            System.out.println(userLabel + ": SUCCESS");
-            return "SUCCESS";
-        } catch (SeatUnavailableException e) {
-            System.out.println(userLabel + ": FAILED (seat unavailable)");
-            return "FAILED";
-        } catch (Exception e) {
-            System.out.println(userLabel + ": ERROR " + e.getMessage());
-            return "ERROR";
-        }
+    @Test
+    void confirmReservation_whenConfirmed_shouldThrowException(){
+        //given
+        reservation.setReservationStatus(ReservationStatus.CONFIRMED);
+
+        when(reservationRepo.findById(1L)).thenReturn(Optional.of(reservation));
+
+        //when & then
+        assertThrows(IllegalStateException.class,
+                () -> reservationService.confirmReservation(1L));
+
+        verify(reservationRepo, never()).save(any());
     }
+
+    @Test
+    void cancelReservation_whenPending_shouldBeCanceled(){
+        //given
+        ReservationResp reservationResp =
+                new ReservationResp(1L, ReservationStatus.CANCELED, 1L, null, null);
+
+        when(reservationRepo.findById(1L)).thenReturn(Optional.of(reservation));
+        when(reservationRepo.save(reservation)).thenReturn(reservation);
+        when(reservationMapper.toReservationResp(reservation)).thenReturn(reservationResp);
+
+        //when
+        ReservationResp result = reservationService.cancelReservation(1L);
+
+        //then
+        assertNotNull(result);
+        assertEquals(ReservationStatus.CANCELED, result.reservationStatus());
+        verify(reservationRepo).save(reservation);
+        verify(reservationMapper).toReservationResp(reservation);
+
+    }
+
+    @Test
+    void cancelReservation_whenCanceled_shouldThrowException(){
+        //given
+        reservation.setReservationStatus(ReservationStatus.CANCELED);
+        when(reservationRepo.findById(1L)).thenReturn(Optional.of(reservation));
+
+        //when & then
+        assertThrows(ReservationAlreadyCanceledException.class,
+                () -> reservationService.cancelReservation(1L));
+        verify(reservationRepo, never()).save(any());
+
+    }
+
 
 }
