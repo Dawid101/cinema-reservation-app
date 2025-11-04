@@ -7,9 +7,11 @@ import com.cinema_reservation_app.entity.TicketType;
 import com.cinema_reservation_app.exception.SeatUnavailableException;
 import com.cinema_reservation_app.repository.ScreeningRepo;
 import com.cinema_reservation_app.repository.SeatRepo;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Transactional
+@Rollback
 class CreateReservationServiceTest {
 
 

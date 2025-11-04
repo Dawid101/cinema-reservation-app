@@ -30,8 +30,14 @@ public class ReservationService {
     private final ScreeningRepo screeningRepo;
     private final SeatRepo seatRepo;
 
-    @Transactional
+
     public ReservationResp createReservation(ReservationReq req) {
+        Reservation createdReservation = create(req);
+        return reservationMapper.toReservationResp(createdReservation);
+    }
+
+    @Transactional
+    public Reservation create(ReservationReq req){
         log.info("Creating reservation for screeningId={}, seatIds={}", req.screeningId(),
                 req.seats().stream().map(ReservationSeatReq::seatId).toList());
 
@@ -58,7 +64,7 @@ public class ReservationService {
 
         reservationRepo.save(createdReservation);
         log.info("Created reservation for screening id={}, seats={}", req.screeningId(), req.seats());
-        return reservationMapper.toReservationResp(createdReservation);
+        return createdReservation;
     }
 
     public ReservationResp confirmReservation(Long id) {
