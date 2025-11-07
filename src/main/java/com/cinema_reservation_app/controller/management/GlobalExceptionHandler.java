@@ -1,4 +1,4 @@
-package com.cinema_reservation_app.controller;
+package com.cinema_reservation_app.controller.management;
 
 import com.cinema_reservation_app.dto.ErrorResp;
 import com.cinema_reservation_app.exception.*;

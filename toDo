@@ -1,6 +1,4 @@
-dodać funkcje user(controller public i managment)
 category do movie(request param)
-migracja bazy danych (spring flyway)
 moduły (ports and adapters(hexagonal architecture))
 GRPC
 KAFKA (events)

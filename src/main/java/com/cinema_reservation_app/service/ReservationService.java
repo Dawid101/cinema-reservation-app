@@ -110,5 +110,15 @@ public class ReservationService {
         }
     }
 
+    public List<ReservationResp> getAllReservation(){
+        List<Reservation> all = reservationRepo.findAll();
+        return reservationMapper.toReservationRespList(all);
+    }
+
+    public ReservationResp findReservationById(Long id){
+        Reservation reservation = findById(id);
+        return reservationMapper.toReservationResp(reservation);
+    }
+
 
 }

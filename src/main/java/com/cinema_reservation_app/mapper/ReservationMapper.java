@@ -55,4 +55,10 @@ public class ReservationMapper {
     public List<ReservationSeat> toReservationSeatList(List<ReservationSeatReq> reservationSeatReqList){
         return reservationSeatReqList.stream().map(this::toReservationSeat).toList();
     }
+
+    public List<ReservationResp> toReservationRespList(List<Reservation> reservations){
+        return reservations.stream()
+                .map(this::toReservationResp)
+                .toList();
+    }
 }

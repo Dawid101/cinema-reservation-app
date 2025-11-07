@@ -1,4 +1,4 @@
-package com.cinema_reservation_app.controller;
+package com.cinema_reservation_app.controller.management;
 
 import com.cinema_reservation_app.dto.CinemaRoomResp;
 import com.cinema_reservation_app.entity.CinemaRoom;
@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/cinema-room")
 @RequiredArgsConstructor
-public class CinemaRoomController {
+public class CinemaRoomMgmtController {
 
     private final CinemaRoomService cinemaRoomService;
 
