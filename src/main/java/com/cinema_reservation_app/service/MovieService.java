@@ -1,12 +1,15 @@
 package com.cinema_reservation_app.service;
 
 import com.cinema_reservation_app.dto.MovieResp;
+import com.cinema_reservation_app.entity.Category;
 import com.cinema_reservation_app.entity.Movie;
 import com.cinema_reservation_app.entity.Screening;
+import com.cinema_reservation_app.exception.CategoryNotFoundException;
 import com.cinema_reservation_app.exception.CinemaRoomNotFoundException;
 import com.cinema_reservation_app.exception.MovieAlreadyExistException;
 import com.cinema_reservation_app.exception.MovieNotFoundException;
 import com.cinema_reservation_app.mapper.MovieMapper;
+import com.cinema_reservation_app.repository.CategoryRepo;
 import com.cinema_reservation_app.repository.CinemaRoomRepo;
 import com.cinema_reservation_app.repository.MovieRepo;
 import jakarta.transaction.Transactional;
@@ -25,6 +28,7 @@ public class MovieService {
     private final MovieRepo movieRepo;
     private final CinemaRoomRepo cinemaRoomRepo;
     private final MovieMapper movieMapper;
+    private final CategoryRepo categoryRepo;
 
     public List<MovieResp> getMovieList() {
         List<Movie> movies = movieRepo.findAll();
@@ -34,6 +38,12 @@ public class MovieService {
     public MovieResp getMovieById(Long id) {
         Movie movie = movieRepo.findById(id).orElseThrow(() -> new MovieNotFoundException("MOVIE NOT FOUND"));
         return movieMapper.toMovieResp(movie);
+    }
+
+    public List<MovieResp> getMoviesByCategory(String categoryName){
+        Category category = categoryRepo.findByName(categoryName).orElseThrow(() -> new CategoryNotFoundException("CATEGORY NOT FOUND"));
+        List<Movie> movies = movieRepo.findAllByCategoryId(category.getId());
+        return movieMapper.toListMovieResp(movies);
     }
 
     @Transactional

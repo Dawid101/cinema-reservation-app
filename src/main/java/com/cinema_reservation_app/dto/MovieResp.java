@@ -8,5 +8,6 @@ public record MovieResp(Long id,
                         String description,
                         int durationMinutes,
                         LocalDate releaseDate,
-                        List<ScreeningResp> screenings) {
+                        List<ScreeningResp> screenings,
+                        String movieCategory) {
 }

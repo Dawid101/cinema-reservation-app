@@ -3,9 +3,7 @@ CREATE TABLE categories (
     name VARCHAR(100) NOT NULL UNIQUE
 );
 
-
 ALTER TABLE movies ADD COLUMN category_id BIGINT;
-
 
 ALTER TABLE movies
 ADD CONSTRAINT fk_movie_category

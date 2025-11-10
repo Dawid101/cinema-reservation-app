@@ -1,4 +1,3 @@
-category do movie(request param)
 moduły (ports and adapters(hexagonal architecture))
 GRPC
 KAFKA (events)

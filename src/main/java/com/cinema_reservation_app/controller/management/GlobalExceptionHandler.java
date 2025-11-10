@@ -53,4 +53,10 @@ public class GlobalExceptionHandler {
         ErrorResp errorResp = new ErrorResp("RESERVATION ALREADY CANCELED", exception.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(errorResp, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ErrorResp> handlerCategoryNotFoundException(CategoryNotFoundException exception){
+        ErrorResp errorResp = new ErrorResp("CATEGORY NOT FOUND", exception.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<>(errorResp,HttpStatus.NOT_FOUND);
+    }
 }

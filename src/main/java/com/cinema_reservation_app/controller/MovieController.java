@@ -5,10 +5,7 @@ import com.cinema_reservation_app.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,6 +24,12 @@ public class MovieController {
     public ResponseEntity<MovieResp> getMovieById(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(movieService.getMovieById(id));
     }
+
+    @GetMapping()
+    public ResponseEntity<List<MovieResp>> getMoviesByCategory(@RequestParam(name = "category") String category){
+        return ResponseEntity.status(HttpStatus.OK).body(movieService.getMoviesByCategory(category));
+    }
+
 
 
 }

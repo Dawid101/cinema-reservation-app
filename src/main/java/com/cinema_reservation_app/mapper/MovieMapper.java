@@ -19,6 +19,7 @@ public class MovieMapper {
         String description = movie.getDescription();
         int durationMinutes = (int) movie.getDuration().toMinutes();
         LocalDate releaseDate = movie.getReleaseDate();
+        String movieCategory = movie.getCategory().getName();
 
         List<ScreeningResp> screenings = movie.getScreenings().stream()
                 .map(screening -> {
@@ -31,7 +32,7 @@ public class MovieMapper {
                     return new ScreeningResp(screeningId, startTime, cinemaRoomId, cinemaRoomNumber, availableSeats);
                 }).toList();
 
-        return new MovieResp(id, title, description, durationMinutes, releaseDate, screenings);
+        return new MovieResp(id, title, description, durationMinutes, releaseDate, screenings,movieCategory);
     }
 
     public List<MovieResp> toListMovieResp(List<Movie> movies) {
