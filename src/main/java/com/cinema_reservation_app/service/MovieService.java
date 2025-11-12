@@ -55,6 +55,7 @@ public class MovieService {
                 screening.setMovie(movie);
                 screening.setCinemaRoom(cinemaRoomRepo.findById(screening.getCinemaRoom().getId()).orElseThrow(() -> new CinemaRoomNotFoundException("CINEMA ROOM NOT FOUND")));
             });
+//            categoryRepo.findByName(movie.getCategory().getName())
             Movie saved = movieRepo.save(movie);
             log.info("Movie ID: {} added", movie.getId());
             return movieMapper.toMovieResp(saved);

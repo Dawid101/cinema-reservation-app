@@ -1,4 +1,2 @@
-moduły (ports and adapters(hexagonal architecture))
-GRPC
-KAFKA (events)
-RABBIT MQ (queues)
+dodawanie filmów naprawić żeby szukało categorię w bazie jeśli nie ma to wtedy dopiero dodawało nową,
+sprawdzić działanie security
