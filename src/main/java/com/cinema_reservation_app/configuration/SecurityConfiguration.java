@@ -2,7 +2,6 @@ package com.cinema_reservation_app.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,8 +13,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
+
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -24,13 +24,11 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/movie/**").hasRole("USER")  // tylko dla testu później zmienić na "ADMIN"
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .logout(Customizer.withDefaults());
         return http.build();
     }
-
-
 }

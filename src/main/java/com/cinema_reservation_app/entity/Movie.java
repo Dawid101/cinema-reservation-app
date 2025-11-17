@@ -29,7 +29,7 @@ public class Movie {
     @JsonManagedReference
     private List<Screening> screenings = new ArrayList<>();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "category_id")
     private Category category;
 }

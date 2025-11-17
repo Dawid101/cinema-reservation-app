@@ -40,28 +40,47 @@ public class MovieService {
         return movieMapper.toMovieResp(movie);
     }
 
-    public List<MovieResp> getMoviesByCategory(String categoryName){
+    public List<MovieResp> getMoviesByCategory(String categoryName) {
         Category category = categoryRepo.findByName(categoryName).orElseThrow(() -> new CategoryNotFoundException("CATEGORY NOT FOUND"));
         List<Movie> movies = movieRepo.findAllByCategoryId(category.getId());
         return movieMapper.toListMovieResp(movies);
     }
 
     @Transactional
-    public MovieResp createMovie(Movie movie) {
-        Optional<Movie> existing = movieRepo.findByTitle(movie.getTitle());
-        if (existing.isEmpty()) {
-            List<Screening> screenings = movie.getScreenings();
-            screenings.forEach(screening -> {
-                screening.setMovie(movie);
-                screening.setCinemaRoom(cinemaRoomRepo.findById(screening.getCinemaRoom().getId()).orElseThrow(() -> new CinemaRoomNotFoundException("CINEMA ROOM NOT FOUND")));
-            });
-//            categoryRepo.findByName(movie.getCategory().getName())
-            Movie saved = movieRepo.save(movie);
-            log.info("Movie ID: {} added", movie.getId());
-            return movieMapper.toMovieResp(saved);
-        } else {
+    public MovieResp createMovie(Movie movieReq) {
+        Optional<Movie> existing = movieRepo.findByTitle(movieReq.getTitle());
+        if (existing.isPresent()) {
             throw new MovieAlreadyExistException("Movie already exist");
         }
+
+        Movie movie = new Movie();
+        Category category = categoryRepo.findByName(movieReq.getCategory().getName())
+                .orElseThrow(() -> new CategoryNotFoundException("CATEGORY NOT FOUND"));
+
+        movie.setTitle(movieReq.getTitle());
+        movie.setCategory(category);
+        movie.setDuration(movieReq.getDuration());
+        movie.setDescription(movieReq.getDescription());
+        movie.setReleaseDate(movieReq.getReleaseDate());
+
+        List<Screening> screenings = movieReq.getScreenings();
+        screenings.forEach(screening -> {
+            screening.setMovie(movie);
+            screening.setCinemaRoom(
+                    cinemaRoomRepo.findById(screening.getCinemaRoom().getId())
+                            .orElseThrow(() -> new CinemaRoomNotFoundException("CINEMA ROOM NOT FOUND"))
+            );
+        });
+        movie.setScreenings(screenings);
+        movieRepo.save(movie);
+        log.info("Movie ID: {} added", movie.getId());
+        return movieMapper.toMovieResp(movie);
+    }
+
+    public void deleteMovie(Long id) {
+        Movie movie = movieRepo.findById(id)
+                .orElseThrow(() -> new MovieNotFoundException("Movie not found"));
+        movieRepo.delete(movie);
     }
 
 }
