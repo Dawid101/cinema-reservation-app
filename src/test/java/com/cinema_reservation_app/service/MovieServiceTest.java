@@ -2,6 +2,7 @@ package com.cinema_reservation_app.service;
 
 import com.cinema_reservation_app.dto.MovieResp;
 import com.cinema_reservation_app.dto.ScreeningResp;
+import com.cinema_reservation_app.entity.Category;
 import com.cinema_reservation_app.entity.CinemaRoom;
 import com.cinema_reservation_app.entity.Movie;
 import com.cinema_reservation_app.entity.Screening;
@@ -46,7 +47,7 @@ class MovieServiceTest {
     void setUp(){
         movie = new Movie();
         ScreeningResp screeningResp = new ScreeningResp(null, null, null, 0, 0);
-        movieResp = new MovieResp(null, null, null, 0, null, List.of(screeningResp));
+        movieResp = new MovieResp(null, null, null, 0, null, List.of(screeningResp),null);
     }
 
     @Test
@@ -104,7 +105,10 @@ class MovieServiceTest {
         Screening screening = new Screening();
         screening.setCinemaRoom(cinemaRoom);
 
+        Category category = new Category();
+
         movie.setScreenings(List.of(screening));
+        movie.setCategory(category);
 
         when(movieRepo.findByTitle(movie.getTitle())).thenReturn(Optional.empty());
         when(cinemaRoomRepo.findById(screening.getCinemaRoom().getId())).thenReturn(Optional.of(cinemaRoom));

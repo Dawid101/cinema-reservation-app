@@ -25,6 +25,10 @@ public class ReservationSeat {
     @JsonBackReference
     private Reservation reservation;
 
+    @ManyToOne
+    @JoinColumn(name = "screening_id")
+    private Screening screening;
+
     @Enumerated(EnumType.STRING)
     private TicketType ticketType;
 }

@@ -1,6 +1,7 @@
 package com.cinema_reservation_app.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,6 +30,10 @@ public class Screening {
     @JoinColumn(name = "movie_id")
     @JsonBackReference
     private Movie movie;
+
+    @OneToMany(mappedBy = "screening", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<ReservationSeat> reservationSeats = new ArrayList<>();
 
     @OneToMany(mappedBy = "screening")
     private List<Reservation> reservations = new ArrayList<>();

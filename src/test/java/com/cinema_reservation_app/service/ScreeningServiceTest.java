@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,7 +31,7 @@ class ScreeningServiceTest {
     @Test
     void getScreeningById_whenExist_shouldReturnScreeningSeatResp() {
         //given
-        Screening screening = new Screening(1L, null, null, null, null);
+        Screening screening = new Screening(1L, null, null, null, null, List.of(null));
         ScreeningSeatResp screeningSeatResp = new ScreeningSeatResp(1L, null, 0L, 0, null, null);
         when(screeningRepo.findById(1L)).thenReturn(Optional.of(screening));
         when(screeningMapper.toScreeningSeatResp(screening)).thenReturn(screeningSeatResp);
