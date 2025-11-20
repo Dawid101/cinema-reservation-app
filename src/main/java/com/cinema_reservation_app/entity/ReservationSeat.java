@@ -31,4 +31,8 @@ public class ReservationSeat {
 
     @Enumerated(EnumType.STRING)
     private TicketType ticketType;
+
+    @Enumerated(EnumType.STRING)
+    private ReservationSeatStatus status = ReservationSeatStatus.ACTIVE;
 }
+

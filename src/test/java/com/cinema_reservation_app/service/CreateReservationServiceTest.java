@@ -81,7 +81,7 @@ class CreateReservationServiceTest {
 
     private String tryCreateReservation(ReservationReq req, String userLabel) {
         try {
-            reservationService.createReservation(req);
+            reservationService.createReservation(null, req.screeningId(),req.seats());
             System.out.println(userLabel + ": SUCCESS");
             return "SUCCESS";
         } catch (SeatUnavailableException e) {
